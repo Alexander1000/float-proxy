@@ -45,10 +45,46 @@ int main(int argc, char** argv)
         int pid = fork();
         if (pid == 0) {
             std::cout << "Data" << std::endl;
+
+            int maxBufferSize = 4096;
+
+            char buf[maxBufferSize];
+            memset(buf, 0, maxBufferSize * sizeof(char));
+
+            char* requestMessage = (char*) malloc(maxBufferSize);
+            memset(requestMessage, 0, maxBufferSize * sizeof(char));
+
+            int totalReceivBits = 0;
+
+            while (strstr(requestMessage, "\r\n\r\n") == NULL) {
+                std::cout << "Iter" << std::endl;
+
+                int recvd = recv(newsockfd, buf, maxBufferSize, 0);
+                if (recvd < 0) {
+                    std::cout << "Error while receiving data" << std::endl;
+                    return 2;
+                } else if (recvd == 0) {
+                    break;
+                } else {
+                    totalReceivBits += recvd;
+
+                    buf[recvd] = '\0';
+                    if (totalReceivBits > maxBufferSize) {
+                        maxBufferSize *= 2;
+                        requestMessage = (char*) realloc(requestMessage, maxBufferSize);
+                    }
+                }
+
+                strcat(requestMessage, buf);
+            }
+
+            std::cout << requestMessage << std::endl;
+
             close(newsockfd);
             break;
         } else {
             close(newsockfd);
+            std::cout << "Close" << std::endl;
             break;
         }
     }
