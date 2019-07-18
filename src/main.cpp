@@ -52,7 +52,7 @@ int main(int argc, char** argv)
             memset(buf, 0, maxBufferSize * sizeof(char));
 
             char* requestMessage = (char*) malloc(maxBufferSize);
-            memset(requestMessage, 0, maxBufferSize * sizeof(char));
+            requestMessage[0] = '\0';
 
             int totalReceivBits = 0;
 
