@@ -5,6 +5,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(float-proxy)
 
+include_directories(
+    include
+)
+
 set(FLOAT_PROXY_SOURCES
     src/main.cpp
 )
